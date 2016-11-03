@@ -1,7 +1,5 @@
 var assert = require('assert'),
-  extensionsPath = process.env.NODESASS_COV
-      ? require.resolve('../lib-cov/extensions')
-      : require.resolve('../lib/extensions');
+  extensionsPath = require.resolve('../lib/extensions');
 
 describe('runtime parameters', function() {
   var packagePath = require.resolve('../package'),
@@ -135,7 +133,7 @@ describe('runtime parameters', function() {
 
   });
 
-  describe('Sass Binary Cache', function() {
+  describe.skip('Sass Binary Cache', function() {
     var npmCacheDir;
     before(function() {
       npmCacheDir = process.env.npm_config_cache;

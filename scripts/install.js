@@ -119,30 +119,27 @@ function checkAndDownloadBinary() {
       return;
     }
 
-    var cachePath = path.join(sass.getCachePath(), pkg.name, pkg.version);
-    var cacheBinary = path.join(cachePath, sass.getBinaryName());
-    if (fs.existsSync(cacheBinary)) {
+    var binaryName = sass.getBinaryName(),
+      cachePath = sass.getBinaryCachePath(),
+      cacheBinary = sass.getCachedBinary();
+
+    if (cacheBinary) {
       console.log('Found existing binary in ' + cacheBinary);
       fs.createReadStream(cacheBinary).pipe(fs.createWriteStream(binaryPath));
-    } else {
-      // In case the cache path doesn't exist
-      mkdir(cachePath, function(err) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-
-        download(sass.getBinaryUrl(), cacheBinary, function(err) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-
-          console.log('Binary downloaded to ' + cacheBinary);
-          fs.createReadStream(cacheBinary).pipe(fs.createWriteStream(binaryPath));
-        });
-      });
+      return;
     }
+
+    cacheBinary = path.join(cachePath, binaryName);
+
+    download(sass.getBinaryUrl(), cacheBinary, function(err) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      console.log('Binary downloaded to ' + cacheBinary);
+      fs.createReadStream(cacheBinary).pipe(fs.createWriteStream(binaryPath));
+    });
   });
 }
 
